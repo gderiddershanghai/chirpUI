@@ -145,7 +145,7 @@ try:# upload_audio or audio_bytes:
     fig.savefig('spectrogram.png', bbox_inches='tight', transparent=True)
 
     img = Image.open('spectrogram.png')
-    st.write(log_spectogram.shape)
+    # st.write(log_spectogram.shape)
     st.image(img)
 
     lng = user_long
