@@ -3,7 +3,7 @@ streamlit
 numpy
 pandas
 PIL
-# geopy
+geopy
 streamlit_js_eval
 time
 audio_recorder_streamlit
