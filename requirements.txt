@@ -6,7 +6,7 @@ pandas
 
 geopy
 streamlit_js_eval
-time
+
 audio_recorder_streamlit
 matplotlib
 calendar
