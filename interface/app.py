@@ -1,23 +1,19 @@
 import streamlit as st
 import numpy as np
-# import numpy as np
 import pandas as pd
-from PIL import Image
-# import requests
-from geopy.geocoders import Nominatim
-from streamlit_js_eval import get_geolocation
-from io import BytesIO
-import time
-# import logging
-from audio_recorder_streamlit import audio_recorder
 import matplotlib.pyplot as plt
-from tensorflow import keras
 import calendar
-from datetime import datetime
-from geopy.geocoders import Nominatim
 import requests
 import json
 import librosa
+
+from PIL import Image
+# from geopy.geocoders import Nominatim
+from streamlit_js_eval import get_geolocation
+from audio_recorder_streamlit import audio_recorder
+from datetime import datetime
+
+
 
 #loading data
 desc_path = "interface/data/36ebirds_description_images.csv"
@@ -61,20 +57,20 @@ with st.sidebar:
 #chirpID location
 
     user_loc = st.sidebar.text_input('Enter your location below')
-    if user_loc:
-        try:
-            #calling the Nominatim tool
-            loc = Nominatim(user_agent="GetLoc")
-            getLoc = loc.geocode(user_loc)
-            # printing address
-            user_lat = getLoc.latitude
-            user_long = getLoc.longitude
-            st.sidebar.write('Your Location is: ', getLoc.address)
-            st.sidebar.write(f"({user_lat}, {user_long})")
+    # if user_loc:
+    #     try:
+    #         #calling the Nominatim tool
+    #         loc = Nominatim(user_agent="GetLoc")
+    #         getLoc = loc.geocode(user_loc)
+    #         # printing address
+    #         user_lat = getLoc.latitude
+    #         user_long = getLoc.longitude
+    #         st.sidebar.write('Your Location is: ', getLoc.address)
+    #         st.sidebar.write(f"({user_lat}, {user_long})")
 
-        except:
-            st.write("chirp error")
-    elif st.checkbox("Use my current location"):
+    #     except:
+    #         st.write("chirp error")
+    if st.checkbox("Use my current location"):
         loc = get_geolocation()
         try:
             user_lat = loc.get('coords').get('latitude')
@@ -91,9 +87,15 @@ def preprocess_picture(file):
 
     sampling_rate=22050
     Signal , sr = librosa.load(file,sr=sampling_rate)
+    if Signal.shape[0] <= sr*10:
+        num_zeros = int((sr*10)-Signal.shape[0])
+        padding = np.zeros(num_zeros)
+        Signal = np.concatenate((Signal, padding), axis=0)
+    Signal = Signal[0:sr*6]
 
-    n_fft = 512 # the window, or kernel as I understand it
-    hop_length = 512 # the amount of shifting the window to the right
+
+    n_fft = 2058 # the window, or kernel as I understand it
+    hop_length = 128 # the amount of shifting the window to the right
     stft = librosa.core.stft(Signal , hop_length = hop_length , n_fft = n_fft)
     spectogram = np.abs(stft)
     picture = librosa.amplitude_to_db(spectogram)
@@ -133,14 +135,17 @@ elif audio_bytes:
     st.audio(audio_bytes, format="audio/wav")
 
 
-if upload_audio or audio_bytes:
-    fig, ax = plt.subplots(figsize=(15,2))
-    ax.imshow(log_spectogram, extent=[0, 16, -1.2, 1.2], cmap='viridis')
+try:# upload_audio or audio_bytes:
+    fig, ax = plt.subplots(figsize=(15,3))
+    librosa.display.specshow(log_spectogram , sr = 22050 , hop_length = 128, htk=True,y_axis="hz" ,x_axis="s", cmap=None)
+
     plt.xlabel('Time (s)', fontdict={'size':15})
-    plt.ylabel('Frequency (kHz)', fontdict={'size':15})
+    plt.ylabel('Frequency (Hz)', fontdict={'size':15})
+    plt.colorbar()
     fig.savefig('spectrogram.png', bbox_inches='tight', transparent=True)
 
     img = Image.open('spectrogram.png')
+    st.write(log_spectogram.shape)
     st.image(img)
 
     lng = user_long
@@ -177,5 +182,5 @@ if upload_audio or audio_bytes:
 
     df = get_map_data(predicted_species)
     st.map(df)
-# except:
-#     st.write("")
+except:
+    st.write("")
