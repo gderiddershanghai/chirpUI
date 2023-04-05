@@ -3,6 +3,7 @@ streamlit
 numpy
 pandas
 PIL
+Pillow
 geopy
 streamlit_js_eval
 time
