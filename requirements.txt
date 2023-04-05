@@ -1,0 +1,9 @@
+numpy
+pandas
+fastapi
+pytz
+uvicorn
+python-multipart
+librosa
+
+joblib
