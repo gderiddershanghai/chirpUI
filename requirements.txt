@@ -2,8 +2,8 @@
 streamlit
 numpy
 pandas
-PIL
-Pillow
+
+
 geopy
 streamlit_js_eval
 time
@@ -15,3 +15,5 @@ datetime
 requests
 json
 librosa
+Pillow
+PIL
