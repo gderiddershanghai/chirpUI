@@ -8,7 +8,7 @@ import json
 import librosa
 
 from PIL import Image
-# from geopy.geocoders import Nominatim
+from geopy.geocoders import Nominatim
 from streamlit_js_eval import get_geolocation
 from audio_recorder_streamlit import audio_recorder
 from datetime import datetime
@@ -57,19 +57,19 @@ with st.sidebar:
 #chirpID location
 
     user_loc = st.sidebar.text_input('Enter your location below')
-    # if user_loc:
-    #     try:
-    #         #calling the Nominatim tool
-    #         loc = Nominatim(user_agent="GetLoc")
-    #         getLoc = loc.geocode(user_loc)
-    #         # printing address
-    #         user_lat = getLoc.latitude
-    #         user_long = getLoc.longitude
-    #         st.sidebar.write('Your Location is: ', getLoc.address)
-    #         st.sidebar.write(f"({user_lat}, {user_long})")
+    if user_loc:
+        try:
+            #calling the Nominatim tool
+            loc = Nominatim(user_agent="GetLoc")
+            getLoc = loc.geocode(user_loc)
+            # printing address
+            user_lat = getLoc.latitude
+            user_long = getLoc.longitude
+            st.sidebar.write('Your Location is: ', getLoc.address)
+            st.sidebar.write(f"({user_lat}, {user_long})")
 
-    #     except:
-    #         st.write("chirp error")
+        except:
+            st.write("chirp error")
     if st.checkbox("Use my current location"):
         loc = get_geolocation()
         try:
